@@ -29,7 +29,7 @@ func main() {
 	}
 	// Get a database handle.
 	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
+	db, err = sql.Op	en("mysql", cfg.FormatDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,7 +51,19 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Album found: %v\n", album)
+	id, err := addAlbum(Album{Title: "The Modern Sound of Betty Carter", Artist: "Betty Carter", Price: 49.99})
 
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	newAlbum, err := albumById(id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Album added: %v\n", newAlbum)
 }
 
 // albumsByArtist queries for albums that have the specified artist name.
@@ -89,4 +101,12 @@ func albumById(id int64) (Album, error) {
 		return alb, fmt.Errorf("albumsById %d: %v", id, err)
 	}
 	return alb, nil
+}
+
+func addAlbum(alb Album) (int64, error) {
+	result, err := db.Exec("INSERT INTO album (title, artist, price) VALUES (?, ?, ?)", alb.Title, alb.Artist, alb.Price)
+	if err != nil {
+		return 0, fmt.Errorf("addAlbum: %v", err)
+	}
+	return result.LastInsertId()
 }
