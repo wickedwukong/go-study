@@ -29,7 +29,7 @@ func main() {
 	}
 	// Get a database handle.
 	var err error
-	db, err = sql.Op	en("mysql", cfg.FormatDSN())
+	db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
